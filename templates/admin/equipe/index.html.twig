@@ -1,0 +1,240 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}    
+
+
+{% block content %}
+<div class="container"> 
+    <div class="row">  
+        <div class="col-md-8 col-md-offset-2"> 
+            {% if(nbsaison is defined and nbsaison == false) %}
+                
+                {#        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <h3>Pour accéder à la gestion de votre équipe, <br>vous devez d'abord créer une saison</h3>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                  <div class="text-center bouton"><p><a class="btn btn-success btn-lg" href="{{ path('app_admin_saison_edit') }}" role="button">Créer ma 1ère saison</a></p></div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>#}
+                
+                          <div class="jumbotron">
+                            <h2>Pour accéder à la gestion de votre équipe, <br>vous devez d'abord créer une saison</h2>
+                           
+                            <div class="text-center bouton"><p><a class="btn btn-success btn-lg" href="{{ path('app_admin_saison_edit') }}" role="button">Créer ma 1ère saison</a></p></div>
+                          </div>      
+            {% else %}
+    
+            <h2 class="titre">Gestion des équipes pour la saison {{ NomderniereSaisonClub.nom }}</h2>
+            
+                  <a class="btn btn-primary pull-right" href="{{path('app_admin_equipe_edit')}}"><i class="fa fa-plus"></i> Ajouter une équipe</a>
+
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#equipe" aria-controls="equipe" role="tab" data-toggle="tab">Equipes du club</a></li>
+                <li role="presentation"><a href="#equipeExt" aria-controls="equipeExt" role="tab" data-toggle="tab">Equipes extérieures</a></li>
+            </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+      
+    <!-- TAB 1 -->  
+    <div role="tabpanel" class="tab-pane active" id="equipe">
+        
+        <h3>Liste des équipes du club</h3>
+
+        {# Affichage du comptage d'équipes si déjà 1 équipe créée #}
+        <small>Nb d'équipes du club créées : {{ nbEquipesClub }}</small>
+        
+        <table class="table table-striped table-bordered table-hover">
+                <tr>
+                    <th class="col-md-1">Id</th>
+                    <th class="col-md-1">Date de création</th>
+                    <th class="col-md-1">Date de modification</th>
+                    <th class="col-md-1">Nom</th>
+                    <th class="col-md-1">Illustration</th>
+                    <th class="col-md-1">Entraîneur</th>
+                    <th class="col-md-6">Actions</th>
+                </tr>
+
+                    {% for equipe in listEquipesClub %}
+                    <tr>
+                        <td>{{ equipe.id }}</td>
+                        <td>{{ equipe.createdAt|date('d/m/Y h:i:s')}}</td>
+                        <td>{{ equipe.updatedAt|date('d/m/Y h:i:s') }}</td>
+                        <td>{{ equipe.nom}}</td>
+                        {% if equipe.image is not null %}
+                            <td align="center"><img src="{{ asset('upload/' ~ equipe.image) }}" width="100px"></td> 
+                        {% else %}
+                            <td align="center"><img src="{{ asset('upload/front_equipes_imgDefaut/img2.png') }}" heigth="75px" width="75px" class="img-responsive"></td>
+                        {% endif %}
+                        
+                         
+                        {% if equipe.staff is not null %}
+                            <td>{{ equipe.staff.nom}}</td>
+                        {% else %}
+                            <td align="center">-</td>
+                        {% endif %} 
+                        <td>
+                            <div class="btn-group">
+                                <a type="button" href="{{ path('app_admin_equipe_edit', {id: equipe.id}) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Modifier</a>
+                                <a type="button" href="{{ path('app_admin_equipe_delete', {id: equipe.id}) }}" class="btn btn-danger btn-sm pull" {% if equipe.hasJoueurs() %}disabled{% endif %}><i class="fa fa-trash"></i> Supprimer</a>
+                                {% if nbEquipesExt== 0 %}
+                                    <div><p class='error'>Avant d'ajouter une rencontre, vous devez ajouter une équipe exterieure</p></div>
+                                    
+                                    
+                                {% endif %} 
+                                <a type="button" href="{{ path('app_admin_rencontre_edit') }}" class="btn btn-warning btn-sm"><i class="fa fa-plus"></i> Ajouter une rencontre</a>
+                                   
+                                <a type="button" href="{{ path('app_admin_joueur_index') }}" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Ajouter joueur</a>
+                           
+                            </div>                
+                        </td>  
+                    </tr>
+
+                {% else %}
+                    <tr>
+                        <td colspan="7">Aucune équipe créée pour le moment.</td>
+                    </tr>                    
+                {% endfor %}           
+            </table>
+            
+        </div> <!-- fin tab 1 -->
+      
+        <!-- TAB 2 -->
+        <div role="tabpanel" class="tab-pane" id="equipeExt">
+            <h3>Liste des équipes extérieures</h3>
+            
+            {# Affichage du comptage d'équipes si déjà 1 équipe créée #}
+            <small>Nb d'équipes extérieures créées : {{ nbEquipesExt }}</small>
+            
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+                    <tr>
+                        <th class="col-md-1">Id</th>
+                        <th class="col-md-1">Date de création</th>
+                        <th class="col-md-1">Date de modification</th>
+                        <th class="col-md-1">Nom</th>
+                        <th class="col-md-1">Illustration</th>
+                        <th class="col-md-1">Entraîneur</th>
+                        <th class="col-md-6">Actions</th>
+                    </tr>
+
+                        {% for equipe in listEquipesClub %}
+                        <tr>
+                            <td>{{ equipe.id }}</td>
+                            <td>{{ equipe.createdAt|date('d/m/Y h:i:s')}}</td>
+                            <td>{{ equipe.updatedAt|date('d/m/Y h:i:s') }}</td>
+                            <td>{{ equipe.nom}}</td>
+                            {% if equipe.image is not null %}
+                                <td align="center"><img src="{{ asset('upload/' ~ equipe.image) }}" width="100px"></td> 
+                            {% else %}
+                                <td align="center"><img src="{{ asset('upload/front_equipes_imgDefaut/img2.png') }}" heigth="75px" width="75px" class="img-responsive"></td>
+                            {% endif %}
+
+
+                            {% if equipe.staff is not null %}
+                                <td>{{ equipe.staff.nom}}</td>
+                            {% else %}
+                                <td align="center">-</td>
+                            {% endif %} 
+                            <td>
+                                <a type="button" href="{{ path('app_admin_equipe_edit', {id: equipe.id}) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Modifier</a>
+                                <a type="button" href="{{ path('app_admin_equipe_delete', {id: equipe.id}) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a>
+                                <a type="button" href="{{ path('app_admin_rencontre_edit') }}" class="btn btn-warning btn-sm"><i class="fa fa-plus"></i> Ajouter une rencontre</a>
+                                <a type="button" href="{{ path('app_admin_joueur_index') }}" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Ajouter joueur</a>
+                                </div>                
+                            </td>  
+                        </tr>
+
+                    {% else %}
+                        <tr>
+                            <td colspan="7">Aucune équipe créée pour le moment.</td>
+                        </tr>                    
+                    {% endfor %}           
+                </table>
+            </div>
+        </div> <!-- fin tab 1 -->
+      
+        <!-- TAB 2 -->
+        <div role="tabpanel" class="tab-pane" id="equipeExt">
+            <h3>Liste des équipes extérieures</h3>
+            
+            {# Affichage du comptage d'équipes si déjà 1 équipe créée #}
+            <small>Nb d'équipes extérieures créées : {{ nbEquipesExt }}</small>
+            
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <th class="col-md-1">Id</th>
+                            <th class="col-md-1">Date de création</th>
+                            <th class="col-md-1">Date de modification</th>
+                            <th class="col-md-1">Nom</th>
+                            <th class="col-md-1">Illustration</th>
+                            <th class="col-md-1">Entraîneur du club créateur de l'équipe extérieure</th>
+                            <th class="col-md-6">Actions</th>
+                        </tr>
+
+                            {% for equipe in listEquipesExt %}
+                            <tr>
+                                <td>{{ equipe.id }}</td>
+                                <td>{{ equipe.createdAt|date('d/m/Y h:i:s')}}</td>
+                                <td>{{ equipe.updatedAt|date('d/m/Y h:i:s') }}</td>
+                                <td>{{ equipe.nom}}</td>
+                                {% if equipe.image is not null %}
+                                    <td align="center"><img src="{{ asset('upload/' ~ equipe.image) }}" width="100px"></td> 
+                                {% else %}
+                                    <td align="center"><img src="{{ asset('upload/front_equipes_imgDefaut/img2.png') }}" heigth="75px" width="75px" class="img-responsive"></td>
+                                {% endif %} 
+
+                                {% if equipe.staff is not null %}
+                                    <td>{{ equipe.staff.nom}}</td>
+                                {% else %}
+                                    <td align="center">-</td>
+                                {% endif %} 
+                                <td>
+                                    <div class="btn-group">
+                                        <a type="button" href="{{ path('app_admin_equipe_edit', {id: equipe.id}) }}" class="btn btn-primary btn-sm"><i class="fa fa-trash"></i> Modifier</a>
+                                        <a type="button" href="{{ path('app_admin_equipe_delete', {id: equipe.id}) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a>
+                                     </div>  
+                                </td>  
+                            </tr>
+
+                        {% else %}
+                            <tr>
+                                <td colspan="7">Aucune équipe extérieure créée pour le moment.</td>
+                            </tr>                    
+                        {% endfor %}           
+                    </table>
+            </div>
+        </div> <!-- fin tab 2-->
+  </div>   
+{% endif %}
+            
+        </div> <!-- fin col --> 
+    </div> <!-- fin row --> 
+</div>  <!-- fin contaner -->    
+
+{% endblock %}
+
+ 

@@ -1,0 +1,6 @@
+twig:
+    paths: ['%kernel.project_dir%/templates']
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    # ajout du theme bootstrap pour les formulaires
+    form_themes: ['bootstrap_3_layout.html.twig']

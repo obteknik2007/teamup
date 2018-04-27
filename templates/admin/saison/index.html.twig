@@ -1,0 +1,69 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}    
+
+
+{% block content %}
+<div class="container"> 
+    <div class="row">  
+        
+        {% if(nbsaisons is defined and nbsaisons == false) %}
+        <div class="col-md-7 col-md-offset-2 creer_saison">        
+                <div class="text-center"><h2>Créez votre première saison</h2></div>
+                <hr>
+                <div class="text-center bouton"><p><a class="btn btn-success btn-lg" href="{{ path('app_admin_saison_edit') }}" role="button">Créer</a></p></div>
+        </div>   
+            {% else %} 
+        <div class="col-md-12"> 
+               
+                
+            <h2 class="titre">Gestion des saisons<a class="btn btn-primary pull-right" href="{{path('app_admin_saison_edit')}}"><i class="fa fa-plus"></i> Ajouter une saison</a></h2>
+            <hr>    
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+                    <tr>
+                        <th>Id</th>
+                        <th>Date de création</th>
+                        <th>Date de modification</th>
+                        <th>Nom de la saison</th>  
+                        <th>Date de début de saison</th>
+                        <th>Date de fin de saison</th>
+                        <th id="actions">Actions</th>
+                    </tr>
+                    {% for saison in saisons %}
+                        <tr>
+                            <td>{{ saison.id }}</td>
+                            <td align="center">{{ saison.createdAt|date('d/m/Y h:i:s')}}</td>
+                            <td align="center">{% if saison.updatedAt is not null %}{{ saison.updatedAt|date('d/m/Y h:i:s') }}{% endif %}</td>
+                            <td>{{ saison.nom}}</td>
+                            <td align="center">{{ saison.dateDebut|date('d/m/Y')}}</td>
+                            <td align="center">{{ saison.dateFin|date('d/m/Y')}}</td>
+                            <td>
+                                <a href="{{ path('app_admin_saison_edit', {id: saison.id}) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Modifier</a>
+                                <a href="{{ path('app_admin_saison_delete', {id: saison.id}) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a>
+                                <a href="{{ path('app_admin_staff_index', {id: saison.id}) }}" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Ajoutez un entraineur</a>
+                            </td>  
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">Aucune saison créée pour le moment.<br>Cliquer sur le bouton ci-dessus pour en créer une.
+                                <a class="btn btn-primary pull-right" href="{{path('app_admin_saison_edit')}}">Ajouter une saison</a>
+                            </td>
+                        </tr>                    
+                    {% endfor %}                  
+                </table>
+            </div>   
+                {% endif %}
+        </div>
+    </div> 
+</div>         
+{% endblock %}

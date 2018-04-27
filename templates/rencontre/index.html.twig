@@ -1,0 +1,134 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}
+
+{% block title %}Fiche rencontre{% endblock %}
+
+
+{% block content %}
+{# FIL D'ARIANE #}
+    <ol class="breadcrumb">
+      <li>Saison {{ NomderniereSaisonClub.nom }}</li>
+      <li>Rencontre du {{ rencontre.date|date('d/m/Y') }}</li>
+    </ol>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="titre">Géolocalisation du lieu de la rencontre</h2>
+                <hr>
+                <small>Lieu de la rencontre : <strong>{{ rencontre.lieu }}</strong></small>
+                 {# GOOGLEMAP #}  
+               <div style="width:100%;height:400px;" class="center-block"  id="googleMap"></div>
+            </div>
+            <div class="col-md-5 col-md-offset-1">
+                <h2 class="titre">Articles de la rencontre</h2>
+                <hr>
+                {% for article in articles %}
+                    <div style="margin-bottom:10px;">
+                        <strong>{{ article.title }}</strong>
+                        <hr>
+                        
+                        <div class="row">                   
+                            <div style="float:left;margin: 5px" class="img-thumbnail">
+                            {% if article.image is not null %}
+                                    <img src="{{ asset('upload/' ~ article.image) }}" width="100px">
+                                {% else %}
+                                    <img src="{{ asset('upload/front_equipes_imgDefaut/img2.png') }}" heigth="75px" width="75px" class="img-responsive">
+                                {% endif %}
+                            </div>
+                            
+                            {{ article.content }}
+                        </div>
+                 {% endfor %}
+            </div>
+        </div>
+        </div> <!-- fin row -->
+</div> <!-- fin container -->
+  
+{% endblock %}
+
+{% block javascripts %}
+          {{ parent() }}
+          <script src="https://maps.googleapis.com/maps/api/js?language=fr&key=AIzaSyBgsboaphCBp3sd_l3emIumeJiXQbvC7S0"></script>
+    <script>
+       var geocoder;
+    var map;
+    var address= '{{ rencontre.lieu }}';
+    /*
+    function TrouverADR()
+    {
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { "address": adresse}, function(results, status) {
+        console.log(status);
+        console.log(google.maps.GeocoderStatus.OK);
+        if (status == google.maps.GeocoderStatus.OK) {
+
+                
+                var strposition = results[0].geometry.location.toString();
+                var latlng = new google.maps.LatLng(strposition);
+                
+                var mapOptions = {
+                        zoom      : 15,
+                        center    : latlng,
+                        scrollwheel:false,
+                        zoomControl: true,
+                        scaleControl: true,
+                        streetViewControl: true
+                        }
+                        
+                map = new google.maps.Map(document.getElementById('googleMap'), mapOptions);	  
+                map.setCenter(results[0].geometry.location);
+                var marker = new google.maps.Marker({
+                                    map: map,
+                                    position: results[0].geometry.location
+                                });
+                }
+                    
+            }  );
+        }
+           
+
+         
+         //TrouverADR(adresse);
+*/
+
+  function initialize() {
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(-34.397, 150.644);
+    var mapOptions = {
+      zoom: 8,
+      center: latlng
+    }
+    map = new google.maps.Map(document.getElementById('googleMap'), mapOptions);
+  }
+
+initialize();
+
+  function codeAddress() {
+    //var address = document.getElementById('address').value;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == 'OK') {
+        map.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location
+        });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  }
+  codeAddress();
+  
+    </script>    
+    {% endblock  %}

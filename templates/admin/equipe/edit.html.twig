@@ -1,0 +1,49 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}    
+
+
+{% block content %}
+<div class="container"> 
+    <div class="row">  
+        <div class="col-md-6 col-md-offset-3">   
+            
+            <!-- Modification du titre selon création/édition -->
+            {% if nom == true %}
+                <h1><i class="fa fa-edit"></i> Edition de l'équipe {{ lib_Equipe }}: {{ nom }}</h1>
+            {% else %}    
+                <h1>Création d'une nouvelle équipe</h1>
+            {% endif %}
+            
+            {{ form_start(form) }}{# ouvre la balise form #}
+            {{ form_row(form.local) }}
+            {{ form_row(form.nom) }}
+            {{ form_row(form.image) }}
+             
+        <p>Actuellement : 
+            {% if form.vars.value.image is not null %}
+                <img src="{{ asset('upload/' ~ form.vars.value.image.filename) }}" width="100px"> 
+                {{ form_row(form.remove_image) }}
+            {% else %}
+                <img src="{{ asset('upload/front_equipes_imgDefaut/img2.png') }}" width="100px">
+            {% endif %} 
+        </p>
+             {{ form_row(form.staff) }}
+            <div class="form-btn-group">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer</button>
+                <a href="{{ path('app_admin_equipe_index') }}" class="btn btn-default"><i class="fa fa-angle-left"></i> Retour</a>
+            </div>
+        </div>
+    </div> 
+</div>     
+    {{ form_end(form) }}{# ferme la balise form #}
+{% endblock %}

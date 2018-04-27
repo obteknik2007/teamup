@@ -1,0 +1,40 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}   
+
+{% block content %} 
+<div class="container"> 
+    <div class="row"> 
+        <div class="col-md-8"> 
+            <h2 class="titre">Liste des joueurs pour la saison {{ NomderniereSaisonClub.nom }}<a href="{{ path('app_equipe_index') }}" class="btn btn-default pull-right"><i class="fa fa-angle-left"></i> Retour</a></h2>
+            <hr>
+            
+             {% for joueur in joueurs %} 
+                 <table class="table table-striped table-bordered table-hover">
+                        <tr>
+                            <td>{{ joueur.fullname }}</td>
+                            <td align="center">{{ joueur.dateNaissance|date('d/m/Y') }}</td>
+                            <td>{{ joueur.rue }} {{ joueur.cp }} {{ joueur.ville }}</td>
+                            <td align="center">{{ joueur.tel1 }}</td>
+                            <td align="center">
+                                {% if joueur.image is not null %}
+                                    <img src="{{ asset('upload/'~joueur.image) }}" width="60px">
+                                {% else %}
+                                    <img src="{{ asset('upload/front_equipes_imgDefaut/img2.png') }}" heigth="75px" width="75px" class="img-responsive">
+                                {% endif %} 
+                            </td>   
+            {% endfor %} 
+             </table>
+        </div> 
+    </div> 
+</div>     
+{% endblock %}    

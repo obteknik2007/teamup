@@ -1,0 +1,42 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}    
+
+
+{% block content %}
+    <div class="container"> 
+    <div class="row">  
+        <div class="col-md-12">     
+            <h1>Création d'un article </h1>
+            {{  form_start(form) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.content) }}
+            {{ form_row(form.image) }}
+
+            {% if form.vars.value.image is not null %}
+                  <p>Actuellement : <img src="{{ asset('upload/' ~ form.vars.value.image.filename) }}" width="100px"></p>
+                  {{ form_row(form.remove_image) }}
+              {% endif %}   
+            {{ form_row(form.rencontre) }}
+        <div class="form-btn-group pull-right">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer</button>
+
+                <a href="{{ path('app_admin_article_index') }}" class="btn btn-default"><i class="fa fa-angle-left"></i> Retour</a>
+            </div>
+         {{ form_end(form) }}
+        </div>
+    </div> 
+</div>    
+    
+    
+{% endblock %}
+

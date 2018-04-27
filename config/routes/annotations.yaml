@@ -1,0 +1,11 @@
+controllers:
+    resource: ../../src/Controller/
+    type: annotation
+    
+# toutes les routes de toutes les classes de controleur
+#contenues dans le repertoire src/Controller/Admin
+#seront préfixées par /admin
+admin:
+    resource: ../../src/Controller/Admin
+    type: annotation
+    prefix: /admin

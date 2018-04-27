@@ -1,0 +1,70 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}    
+
+
+{% block content %}
+<div class="container"> 
+    <div class="row">  
+        <div class="col-md-12">     
+            <div class="col-md-6"> 
+                <!-- Modification du titre selon création/édition -->
+                {% if joueur.id is not null %}
+                    <h1>Edition du joueur : {{ joueur.fullName }}</h1>
+                {% else %}    
+                    <h1>Création d'un joueur</h1>
+                {% endif %}
+
+                {{ form_start(form) }}
+                <fieldset>
+                    <legend>Identité du joueur</legend>
+                {{ form_row(form.prenom) }}
+                {{ form_row(form.nom) }}
+                {{ form_row(form.rue) }}
+                {{ form_row(form.cp) }}
+                {{ form_row(form.ville) }}
+                {{ form_row(form.tel1) }}
+                {{ form_row(form.tel2) }}
+
+                {{ form_row(form.dateNaissance) }}
+                {{ form_row(form.genre) }}
+                </fieldset>
+            </div>
+            <div class="col-md-6"> 
+                <fieldset>
+                <legend>Document(s) administratifs()</legend>
+                {{ form_row(form.image) }}
+                {{ form_row(form.certificat) }}
+                </fieldset>
+
+                <fieldset>
+                <legend>Affectation à une équipe du club</legend>            
+                {{ form_row(form.equipe) }}
+                </fieldset>
+
+                <fieldset>
+                <legend>Section membre accès plateforme</legend>    
+
+                </fieldset>
+
+                <div class="form-btn-group pull-right">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Enregistrer</button>
+                    <a href="{{ path('app_admin_joueur_index') }}" class="btn btn-default"><i class="fa fa-angle-left"></i> Retour</a>
+                </div>
+                    {{ form_end(form) }}
+            </div>
+        </div>
+    </div> 
+</div>    
+    
+    
+{% endblock %}

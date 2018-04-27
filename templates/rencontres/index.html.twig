@@ -1,0 +1,183 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}    
+
+{% block title %} Page rencontres équipe{% endblock %}
+
+{% block content %}
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+            <h2 class="titre">Liste des rencontres pour la saison {{ NomderniereSaisonClub.nom }}<a href="{{ path('app_equipe_index') }}" class="btn btn-default pull-right"><i class="fa fa-angle-left"></i> Retour</a></h2>
+            <hr>
+                <table class="table table-striped table-bordered table-hover">
+
+                    <tr>
+                        <th>id</th>
+                        <th>Date</th>
+                        <th>Equipe du club</th>
+                        <th>Equipe extérieure</th>
+                        <th>Score Equipe club</th>
+                        <th>Score Equipe extérieure</th>
+                        <th>Résultat</th>
+                        <th>Lieu</th>
+                        <th></th>
+                    </tr>
+                       {# j'imagine que les noms d'équipes et dates deviendront tous cliquables dans le futur a voir. #}              
+                       {% for rencontre in rencontres %}
+                    <tr>
+                        <td>{{ rencontre.id }}</td>
+                        <td>{{ rencontre.date|date('d/m/Y')}}</td>
+                        <td class="text-center">{{ rencontre.equipe1}}</td>
+                        <td class="text-center">{{ rencontre.equipe2}}</td>
+                        {% if(rencontre.equipe1Score == false) %}
+                            <td>-</td>
+                        {% else %}
+                            <td align="center">{{ rencontre.equipe1Score}}</td>
+                        {% endif %}
+                         {% if(rencontre.equipe2Score == false) %}
+                            <td align="center">-</td>
+                        {% else %}
+                            <td align="center">{{ rencontre.equipe2Score}}</td>
+                        {% endif %} 
+                         {% if(rencontre.equipe1score > rencontre.equipe2score) %}
+                            <td align="center"><button class=" btn btn-success resultat_rencontres_btn btn_vic" disabled>V</button></td>
+                        {% elseif(rencontre.equipe1score == rencontre.equipe2score) %}
+                            <td align="center"><button class=" btn btn-warning resultat_rencontres_btn btn_nul" disabled>N</button></td>
+                        {% else %}
+                            <td align="center"><button class=" btn btn-danger resultat_rencontres_btn btn_def " disabled>D</button></td>
+                        {% endif %}
+                         <td>{{ rencontre.lieu}}</td>
+                         <td><a href="{{path('app_rencontre_index',{id:rencontre.id}) }}">Fiche détaillée</a></td>
+                        
+                        
+                        
+                   {% endfor %} 
+                   
+                   {#
+                        <td><a href="#" target="_blank">Fiche détaillée</a></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>08/11/2017</td>
+                        <td>Stade Auguste Delaune, Arcachon</td>
+                        <td>Arcachon U8 vs Dijon U8</td>
+                        <td class="text-center">3-0 <button class=" btn btn-success resultat_rencontres_btn btn_vic" disabled>V</button></td>
+                        {# il faudra afficher ces boutons avec des boucles et conditions selon victoire nul défaite #}
+                        
+                    </tr>
+                  
+                </table>
+                         <div id="filtre-rencontres">
+                             <p class="text-center">
+                                 <button id="filtrage_btn" class="btn btn-primary" title="cliquer pour filtrer">Filtrer</button>
+                             </p>
+                                     <div class="div_btn_filtrage text-center">
+                                         <button class="btn btn-success btn" id="victoire" >V</button>                        
+                                           <button class="btn btn-warning btn" id="nul" >N</button>
+                                           <button class="btn btn-danger btn" id="defaite" >D</button>
+                                      </div>
+                            </div>
+                        </div>
+                        
+            </div>
+        </div>
+                      
+    
+
+{% endblock %} 
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        /*
+         *  .btn_def cible les boutons défaite
+         *  .btn_vic cible les boutons victoires
+         *  .btn_nul cible les boutons nuls
+         *  
+         *  les id "victoire" "nul" et "defaite" ciblent les boutons pour déclencher les filtrages
+         *  
+         *  afin de flitrer.
+         * 
+         */
+        
+         $(function() {
+                
+                function boutonFiltrer(){  //Fonction pour gérer le bouton de filtrage
+
+                    if($("#filtrage_btn").text() === "Filtrer") 
+                    {
+                            $(".div_btn_filtrage").fadeIn('slow');
+                            $("#filtrage_btn").text("Retirer filtrage").attr("title","cliquer pour enlever le filtrage");
+                    }        
+                
+                    else if ($("#filtrage_btn").text() === "Retirer filtrage") 
+                    {
+                        $(".div_btn_filtrage").fadeOut('slow');
+                        $("#filtrage_btn").attr("title","cliquer pour choisir un filtrage");
+                        $(".btn_nul,.btn_def,.btn_vic").removeClass("cacher"); //Remets les élts en place
+                        $("#filtrage_btn").text("Filtrer"); // Change le texte du bouton
+                        
+                    }
+                }// Fin fonction boutonFiltrer()
+
+                $("#filtrage_btn").click(function() { 
+                    boutonFiltrer(); //fonction appliquée au click sur le bouton "filtrer"
+                });
+                    
+                // gestion des boutons de filtrage "victoire nul défaite"
+                function vic() {
+
+                         if ($(".btn_vic").is(":visible"))
+                         {
+                                 $(".btn_nul").toggleClass("cacher");
+                                 $(".btn_def ").toggleClass("cacher");
+                         }           
+                                } // fin fonction vic
+
+                function nul() {
+
+                    if ($(".btn_nul").is(":visible")) {
+                    
+                        $(".btn_vic").toggleClass("cacher");
+                             $(".btn_def ").toggleClass("cacher");              
+                    }  
+                 } // fin fonction nul
+                            
+
+                function def() {
+
+                    if ($(".btn_def").is(":visible")) {
+
+                                $(".btn_vic").toggleClass("cacher");
+                                $(".btn_nul ").toggleClass("cacher");
+                    } // fin fonction def
+                }
+                     
+            //Application des différentes fonctions aux clics respectifs   
+            $("#victoire").click(function() {
+                vic();
+            });
+                
+            $("#nul").click(function() {
+                nul();
+            });
+                
+            $("#defaite").click(function() {
+                def();
+            });
+                
+            }); // fin jquery
+    </script>    
+    
+{% endblock %}    

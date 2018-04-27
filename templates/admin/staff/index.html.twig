@@ -1,0 +1,68 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}    
+
+
+{% block content %}
+<div class="container"> 
+    <div class="row">  
+        <div class="col-md-12">     
+            <h2 class="titre">Gestion des membres du staff<a class="btn btn-primary pull-right" href="{{path('app_admin_staff_edit')}}"><i class="fa fa-plus"></i> Ajouter un membre du staff</a></h2>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+                    <tr>
+                        <th>Id</th>
+                        <th>Date de création</th>
+                        <th>Date de modification</th>
+                        <th>Prénom</th>  
+                        <th>Nom</th>
+                        <th>Fonction dans le club</th>   
+                        <th>Photo</th>
+                        <th>Actions</th>
+                    </tr>
+                    {% for membre in membres %}
+                        <tr>
+                            <td>{{ membre.id }}</td>
+                            <td>{{ membre.created_at|date('d/m/Y h:i:s')}}</td>
+                            <td>{% if membre.updated_at is not null %}{{ staff.updated_at|date('d/m/Y h:i:s') }}{% endif %}</td>
+                            <td>{{ membre.prenom}}</td>
+                            <td>{{ membre.nom}}</td>
+                            {% if membre.fonction == 1 %}
+                                <td>Dirigeant</td>
+                            {% else %}
+                                <td>Entraineur</td>
+                            {% endif %} 
+
+                            {% if membre.image is not null %}
+                                <td align="center"><img src="{{ asset('upload/' ~ membre.image) }}" width="100px"></td> 
+                            {% else %}
+                                <td align="center"><img src="{{ asset('upload/front_equipes_imgDefaut/img2.png') }}" heigth="75px" width="75px" class="img-responsive"></td>
+                            {% endif %} 
+
+                            <td>
+                                <a href="{{ path('app_admin_staff_edit', {id: membre.id}) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Modifier</a>
+                                <a href="{{ path('app_admin_staff_delete', {id: membre.id}) }}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Supprimer</a>
+                                <a href="{{ path('app_admin_equipe_index', {id: membre.id}) }}" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Ajoutez une équipe</a>
+                            </td>  
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8">Aucun membre du staff créé pour le moment.</td>
+                        </tr>                    
+                    {% endfor %}                  
+                </table>
+            </div>
+        </div>
+    </div> 
+</div>     
+{% endblock %}

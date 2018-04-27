@@ -1,0 +1,51 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}
+
+{% block content %} 
+<div class="container"> 
+    <div class="row">  
+        <h1 class="text-center titre">Contactez Team Up</h1>
+        <div class="col-md-5 carte">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2626.0720997967537!2d2.331642915871902!3d48.83776341011247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e671c7785c4fd3%3A0xa335415b3909439d!2s82+Avenue+Denfert-Rochereau%2C+75014+Paris!5e0!3m2!1sfr!2sfr!4v1521112440473" 
+                         width="200" height="200" frameborder="0" style="border:0" class="carte" allowfullscreen></iframe>
+        </div>
+        {{ form_start(form) }}{# ouvre la balise form #}
+        <div class="col-md-3 col-md-offset-1"> 
+             {{ form_row(form.nom) }}
+             {{ form_row(form.prenom) }}
+             {{ form_row(form.mel) }}
+             {{ form_row(form.telephone) }}
+        </div>
+        <div class="col-md-3"> 
+             {{ form_row(form.message) }}
+             
+             <div class="form-btn-group pull-right">
+                 <button type="submit" class="btn btn-primary">
+                     Enregistrer
+                 </button>
+                 <a href="{{ path('app_index_index') }}" class="btn btn-default">Retour</a>
+            </div>
+        </div>
+        {{ form_end(form) }}{# ferme la balise form #}
+    </div> 
+</div>  
+ {% endblock %}
+ 
+ {% block footer %}
+   {{parent()}} 
+{% endblock %} 
+    
+
+
+
+

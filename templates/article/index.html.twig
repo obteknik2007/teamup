@@ -1,0 +1,28 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}    
+
+
+{% block body %}
+    <h1>{{ article.title }}</h1>
+    {% for image in  images %}
+        {% if article.image is not null %}
+            <div class="thumbnail">
+                <img src="{{ asset('upload/' ~ article.image) }}">
+            </div>
+        {% endif %}
+    {% endfor %}
+    <p>
+       par {{ article.author }}</p>
+    </p>
+    <div>{{ article.content }}</div>
+{% endblock %}

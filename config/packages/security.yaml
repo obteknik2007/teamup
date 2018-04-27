@@ -1,0 +1,47 @@
+security:
+    #config encodage du mot de passe
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        db:
+            entity:
+                class: App\Entity\User
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            #le provider qui utilise App\Entity\User
+            provider: db
+            #sur tout le site
+            pattern: ^/
+            #
+            form_login: 
+                #route du formulaire d'authentification
+                login_path: app_security_login
+                #route du traitement du formulaire d'authentification
+                check_path: app_security_login
+                #vers quelle page on est redirigé après l'authentification
+                default_target_path: app_index_index
+            logout:
+                #route de la page de deconnexion
+                path: app_security_logout
+                #vers quelle page on est redirigé après la deconnexion
+                target: app_index_index
+            # activate different ways to authenticate
+
+            # http_basic: true
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+
+            # form_login: true
+            # https://symfony.com/doc/current/security/form_login_setup.html
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }

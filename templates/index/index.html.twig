@@ -1,0 +1,23 @@
+{% extends 'layout.html.twig' %}
+{% block body %}
+     
+{% block header %}
+{{parent()}}  {# reprend  #} 
+{% endblock %}
+
+{% block index %}
+{{parent()}} 
+{% endblock %}
+
+{% block div %}
+{% endblock %}
+    
+{% block content %}
+{{parent()}}
+{% endblock %}{# fin block content #}
+
+{% block footer %}
+   {{parent()}}
+{% endblock %}
+
+{% endblock %}{# fin block body #}

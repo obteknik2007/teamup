@@ -1,0 +1,55 @@
+{% extends 'layout.html.twig' %}
+
+{% block header %}{# Reprend l'affiche de l'image d'accueil et du menu #}
+  {{ parent() }}
+{% endblock %} 
+
+{% block reduction_image %}{# Affiche l'image d'accueil en taille reduite #}
+  {{ parent() }} 
+{% endblock %}
+
+{% block index %}{# Vide pour ne pas afficher l'image en grande taille #}
+{% endblock %}    
+
+{% block content %} 
+<div class="container"> 
+    <div class="row">  
+            {% if(nbsaisons is defined and nbsaisons == false) %}
+                <div class="col-md-8 col-md-offset-2">
+                   <div class="container"> 
+                          <div class="jumbotron">
+                            <h2>Pour accéder à la gestion de votre club, <br>vous devez d'abord créer une saison</h2>
+                           
+                           <a class="btn btn-success btn-lg" type="button" href="{{ path('app_admin_saison_edit') }}" role="button">Créer ma première saison</a>
+                          </div>  
+                    </div>        
+            {% else %}
+            <h1 class="titre">Mon Club pour la saison 2017-2018</h1>
+            <hr>
+            {% for equipe in listEquipes %}
+            <div class="col-md-3"> 
+                <div class="thumbnail">
+                    <div class="caption text-center">
+                        <h3 class="nom-equipe">{{ equipe.nom }}</h3>
+                        <div class="thumbnail">
+                            
+                            {% if equipe.image is not null %}
+                                <img src="{{ asset('upload/' ~ equipe.image) }}" class="img-responsive">
+                            {% else %}
+                                <img src="{{ asset('upload/front_equipes_imgDefaut/img2.png') }}" class="img-responsive">   
+                            {% endif %}
+
+                        </div>
+                    </div>
+                        <p class="nom-entraineur">Nom de l'entraineur: <span style="color:dodgerblue">{{ equipe.staff.prenom }} {{ equipe.staff.nom }}</span></p> 
+                        <span class=""><a href="{{ path('app_ficheequipe_index', {id: equipe.id}) }}" class="btn btn-primary" role="button">Fiche Equipe</a></span>
+                        <span class="pull-right"><a href="{{ path('app_rencontres_index', {id: equipe.id}) }}" class="btn btn-primary" role="button">Rencontres</a></span>{#<a href="#" class="btn btn-default" role="button">Button</a></p>#}
+                </div>
+            </div>
+            {% endfor %}
+          {% endif  %}
+        </div>  
+    </div> 
+    
+</div>              
+{% endblock %}
